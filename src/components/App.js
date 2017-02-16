@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import CubeContainer from './CubeContainer'
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        Hello World
+      <div className="app">
+          <CubeContainer/>
       </div>
     );
   }
