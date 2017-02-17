@@ -1,14 +1,26 @@
 import React, { Component } from 'react';
-import CubeContainer from './CubeContainer'
+import CubeContainer from './CubeContainer';
 
 class App extends Component {
-  render() {
-    return (
-      <div className="app">
-          <CubeContainer/>
-      </div>
-    );
-  }
+
+    constructor(props){
+        super(props);
+        this.rangeChange=this.rangeChange.bind(this);
+        this.state={orientation:[0,0,0]};
+    }
+
+    rangeChange(eve) {
+        this.setState({orientation:[0,eve.target.value,0]})
+    }
+
+    render() {
+        return (
+            <div className="app">
+                <input onChange={this.rangeChange} type="range" min="0" max="360" style={{'margin-bottom':'100px'}}/>
+                <CubeContainer orientation={this.state.orientation}/>
+            </div>
+        );
+    }
 }
 
 export default App;
