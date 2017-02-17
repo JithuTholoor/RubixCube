@@ -1,53 +1,60 @@
 body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
 }
 
-.app{
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%,-50%);
+.app {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
-.cube-container{
-  transform-style: preserve-3d;
-  perspective: 200px;
+.cube-container {
+    transform-style: preserve-3d;
+    perspective: 200px;
 }
 
-.cube{
-  width: 50px;
-  height: 50px;
-  transform-style: preserve-3d;
+.cube {
+    width: 50px;
+    height: 50px;
+    transform-style: preserve-3d;
+    position: absolute;
 }
 
-.cube .face{
-  border: 1px solid #333;
-  width:50px;
-  height:50px;
-  position: absolute;
+.cube .face {
+    border: 1px solid #333;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    box-sizing: border-box;
 }
 
-.cube .face.front{
-  transform: translateZ(25px) rotate(0deg)
+.cube .face.front {
+    transform: translateZ(25px) rotate(0deg)
 }
-.cube .face.back{
-  transform: translateZ(-25px) rotate(0deg)
+
+.cube .face.back {
+    transform: translateZ(-25px) rotate(0deg)
 }
-.cube .face.top{
-  transform: rotateX(-90deg) translateY(-25px);
-  transform-origin: top center;
+
+.cube .face.top {
+    transform: rotateX(-90deg) translateY(-25px);
+    transform-origin: top center;
 }
-.cube .face.bottom{
-  transform: rotateX(90deg) translateY(25px);
-  transform-origin: bottom center;
+
+.cube .face.bottom {
+    transform: rotateX(90deg) translateY(25px);
+    transform-origin: bottom center;
 }
-.cube .face.left{
-  transform:rotateY(270deg) translateX(-25px);
-transform-origin: center left;
+
+.cube .face.left {
+    transform: rotateY(270deg) translateX(-25px);
+    transform-origin: center left;
 }
-.cube .face.right{
-  transform:rotateY(-270deg) translateX(25px);
-  transform-origin: center right;
+
+.cube .face.right {
+    transform: rotateY(-270deg) translateX(25px);
+    transform-origin: center right;
 }
