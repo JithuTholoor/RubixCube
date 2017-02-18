@@ -5,8 +5,16 @@ class CubeContainer extends Component {
     render() {
         return (
             <div className="cube-container">
-                <Cube translate={[0,0,0]} base="true" orientation={this.props.orientation}/>
-                <Cube translate={[50,0,0]} orientation={this.props.orientation} />
+                <Cube translate={[0, 0, 0]} orientation={this.props.orientation} />
+                <Cube translate={[50, 0, 0]} orientation={this.props.orientation} />
+                <Cube translate={[-50, 0, 0]} orientation={this.props.orientation} />
+                <Cube translate={[0, 50, 0]} orientation={this.props.orientation} />
+                <Cube translate={[0, -50, 0]} orientation={this.props.orientation} />
+                <Cube translate={[-50, 50, 0]} orientation={this.props.orientation} />
+                <Cube translate={[50, 50, 0]} orientation={this.props.orientation} />
+                <Cube translate={[50, -50, 0]} orientation={this.props.orientation} />
+                <Cube translate={[-50, -50, 0]} orientation={this.props.orientation} />
+                
             </div>
         );
     }
