@@ -8,21 +8,40 @@ class Cube extends Component {
 
     calcPosition() {
         if (this.props.orientation) {
+            
             //z axis calculation.
             let zAxis = 0;
-            if (this.props.translate[0] != 0 || this.props.translate[2] != 0 )
-                zAxis = this.props.translate[0] == 50 || this.props.translate[2] == 50  ?
+            if (this.props.translate[0] != 0 || this.props.translate[2] != 0) {
+                zAxis = this.props.translate[0] == 50 || this.props.translate[2] == -50 ?
                     Math.sin(this.toRadians(this.props.orientation[1])) * 50 :
                     Math.sin(this.toRadians(Math.abs(360 - this.props.orientation[1]))) * 50;
+            }
 
             //x axis calculation
             let xAxis = 0;
-            if (this.props.translate[0] != 0 || this.props.translate[2] != 0 ) {
+            if (this.props.translate[0] != 0 || this.props.translate[2] != 0) {
                 let angle = Math.abs(180 - this.props.orientation[1]) / 2;
-                xAxis = Math.abs(zAxis) / Math.tan(this.toRadians(angle)) == Infinity ? 100 : Math.abs(zAxis) / Math.tan(this.toRadians(angle));
-                xAxis = this.props.translate[0] == 50 || this.props.translate[2] == -50 ? xAxis : 0 - xAxis;
+                xAxis = Math.abs(zAxis) / Math.tan(this.toRadians(angle)) == Infinity ?
+                 100 : Math.abs(zAxis) / Math.tan(this.toRadians(angle));
+                xAxis = this.props.translate[0] == 50 || this.props.translate[2] == 50 ? xAxis : 0 - xAxis;
             }
-            return [xAxis, 0, zAxis];
+
+            if (this.props.translate[2] != 0) {
+                if (this.props.translate[2] == 50) {
+                    if (this.props.translate[0] == 0)
+                        return [zAxis, 0, xAxis];
+                    if(this.props.translate[0]==50)
+                        return [-zAxis+ xAxis, 0, xAxis + zAxis];
+                    return [zAxis - xAxis, 0, xAxis + zAxis];
+                }
+                if (this.props.translate[0] == 0)
+                    return [zAxis, 0, xAxis];
+                if (this.props.translate[0] == 50)
+                    return [zAxis + xAxis, 0, -xAxis + zAxis];
+                return [zAxis + xAxis, 0, xAxis - zAxis];
+            }
+            else
+                return [xAxis, 0, zAxis]
         }
         return [0, 0, 0];
     }

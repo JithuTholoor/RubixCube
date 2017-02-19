@@ -16,6 +16,7 @@ class App extends Component {
     render() {
         return (
             <div className="app">
+                {this.state.orientation[1]}
                 <input onChange={this.rangeChange} type="range" min="0" max="360" style={{'margin-bottom':'100px'}}/>
                 <CubeContainer orientation={this.state.orientation}/>
             </div>
