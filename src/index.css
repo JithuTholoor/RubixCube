@@ -13,7 +13,7 @@ body {
 
 .cube-container {
     transform-style: preserve-3d;
-    perspective: 200px;
+    perspective: 400px;
 }
 
 .cube {

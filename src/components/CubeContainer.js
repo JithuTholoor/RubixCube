@@ -10,7 +10,39 @@ class CubeContainer extends Component {
         this.rangeChangeZ=this.rangeChangeZ.bind(this);
         this.calcPosition=this.calcPosition.bind(this);
         this.moveCubes=this.moveCubes.bind(this);
-        this.state={positions:[[0, 0, 0],[0, -50, 0]],orientation:[0,0,0],prevOrientation:[0,0,0]};
+        this.state={
+            positions:[
+                [0, 0, 0],
+                [-50, 0, 0],
+                [50, 0, 0],
+                [0, -50, 0],
+                [0, 50, 0],
+                [-50, -50, 0],
+                [-50, 50, 0],
+                [50, -50, 0],
+                [50, 50, 0],
+                
+                [0, 0, -50],
+                [-50, 0, -50],
+                [50, 0, -50],
+                [0, -50, -50],
+                [0, 50, -50],                
+                [-50, -50, -50],
+                [-50, 50, -50],
+                [50, -50, -50],
+                [50, 50, -50],
+
+                [0, 0, 50],
+                [-50, 0, 50],
+                [50, 0, 50],
+                [0, -50, 50],
+                [0, 50, 50],                
+                [-50, -50, 50],
+                [-50, 50, 50],
+                [50, -50, 50],
+                [50, 50, 50],
+                ]
+            ,orientation:[0,0,0],prevOrientation:[0,0,0]};
     }
 
     rangeChangeY(eve) {
@@ -80,11 +112,12 @@ class CubeContainer extends Component {
                 {this.state.orientation[2]}
                 <input onChange={this.rangeChangeZ}  type="range" min="0" max="360" style={{'margin-bottom':'100px'}}/>
                 <div className="cube-container">
-                    <Cube translate={this.state.positions[0]} orientation={this.state.orientation}
+                    {this.state.positions.map((val,index)=>{
+                        return (
+                            <Cube translate={this.state.positions[index]} orientation={this.state.orientation}
                           prevOrientation={this.state.prevOrientation}/>
-                    <Cube translate={this.state.positions[1]} orientation={this.state.orientation}
-                          prevOrientation={this.state.prevOrientation}/>
-
+                        )
+                    })}
                 </div>
             </div>
         );
