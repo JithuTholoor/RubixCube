@@ -14,6 +14,8 @@ body {
 .cube-container {
     transform-style: preserve-3d;
     perspective: 400px;
+    width:500px;
+    height:500px;
 }
 
 .cube {
@@ -21,6 +23,8 @@ body {
     height: 50px;
     transform-style: preserve-3d;
     position: absolute;
+    left: calc( 50% - 25px );
+    top:calc( 50% - 25px );
 }
 
 .cube .face {

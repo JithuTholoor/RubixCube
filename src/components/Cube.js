@@ -8,7 +8,7 @@ class Cube extends Component {
                 transform: `translate3d(${this.props.translate[0]}px,
         ${this.props.translate[1]}px,
         ${this.props.translate[2]}px)
-         rotateX(${this.props.orientation[0]}deg) rotateY(${this.props.orientation[1]}deg) rotateZ(${this.props.orientation[2]}deg)`
+         rotate3d(${this.props.orientation[0]},${this.props.orientation[1]},${this.props.orientation[2]},${this.props.orientation[3]}deg)`
             } : {});
     }
 
