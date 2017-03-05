@@ -10,7 +10,6 @@ class CubeContainer extends Component {
         this.moveCubes=this.moveCubes.bind(this);
         this.getOrientation=this.getOrientation.bind(this);
         this.directionChange=this.directionChange.bind(this);
-        this.angleChange=this.angleChange.bind(this);
         this.state={
             positions:[
                 [0, 0, 0],
@@ -46,9 +45,7 @@ class CubeContainer extends Component {
             ,angleOfRotation:0,roationVector:[1,0,0]};
         this.state.movedPositions=this.state.positions;
         this.state.prevRoationVector=this.state.roationVector;
-        this.state.prevAngleOfRotation=this.state.angleOfRotation;
         this.calculateResultantAngle=this.calculateResultantAngle.bind(this);
-        this.turn=this.turn.bind(this);
         this.onTouchStart=this.onTouchStart.bind(this);
         this.onTouchMove=this.onTouchMove.bind(this);
         this.onTouchEnd=this.onTouchEnd.bind(this);
@@ -95,56 +92,49 @@ class CubeContainer extends Component {
        this.setState({roationVector:eve.target.value.split(',')});
        
     }
-
-    angleChange(eve){
-        this.calculateResultantAngle(eve.target.value)
-    }
-
-    calculateResultantAngle(alpha){
+    
+    calculateResultantAngle(alpha,roationVector){
         const cos=(angle)=>(Math.cos(toRadians(angle)));
         const sin=(angle)=>(Math.sin(toRadians(angle)));
 
-        const mx=this.state.prevRoationVector[0];
-        const my=this.state.prevRoationVector[1];
-        const mz=this.state.prevRoationVector[2]; 
+        const lx=roationVector[0];
+        const ly=roationVector[1];
+        const lz=roationVector[2]; 
 
-        const lx=this.state.roationVector[0];
-        const ly=this.state.roationVector[1];
-        const lz=this.state.roationVector[2];
+        const mx=this.state.roationVector[0];
+        const my=this.state.roationVector[1];
+        const mz=this.state.roationVector[2];
 
-        const beta=this.state.prevAngleOfRotation;
+        const beta=this.state.angleOfRotation;
 
         const gama=2*toDegrees(Math.acos(
             cos(alpha/2)*cos(beta/2) - sin(alpha/2)*sin(beta/2)*(lx*mx+ly*my+lz*mz)
         ));
 
-        const nx=(
+        const nx=((
             sin(alpha/2)*cos(beta/2)*lx+
             cos(alpha/2)*sin(beta/2)*mx+
             sin(alpha/2)*sin(beta/2)*(ly*mz-lz*my)
-            )/sin(gama/2);
+            )/sin(gama/2)).toFixed(6);
         
-        const ny=(
+        const ny=((
             sin(alpha/2)*cos(beta/2)*ly+
             cos(alpha/2)*sin(beta/2)*my+
             sin(alpha/2)*sin(beta/2)*(lz*mx-lx*mz)
-            )/sin(gama/2);
+            )/sin(gama/2)).toFixed(6);
         
-        const nz=(
+        const nz=((
             sin(alpha/2)*cos(beta/2)*lz+
             cos(alpha/2)*sin(beta/2)*mz+
             sin(alpha/2)*sin(beta/2)*(lx*my-ly*mx)
-            )/sin(gama/2);
+            )/sin(gama/2)).toFixed(6);
+        
 
         this.setState(
-            {prevAngleOfRotation:this.state.angleOfRotation,
+            {
             prevRoationVector:this.state.roationVector,
             angleOfRotation:gama,
             roationVector:[nx,ny,nz]},this.moveCubes);
-    }
-
-    turn(){
-        this.calculateResultantAngle();
     }
 
     onTouchStart(eve){
@@ -154,8 +144,12 @@ class CubeContainer extends Component {
     onTouchMove(eve){
         if(this.state.touchStarted && eve.clientY-this.state.mousePoint.y!=0)
         {
-            var diff=eve.clientY-this.state.mousePoint.y;            
-            this.setState({mousePoint:{x:eve.clientX,y:eve.clientY}},()=>{this.calculateResultantAngle(diff)});    
+            let diffY=eve.clientY-this.state.mousePoint.y;    
+            let diffX=eve.clientX-this.state.mousePoint.x;   
+            if(Math.abs(diffY)>Math.abs(diffX))        
+            this.setState({mousePoint:{x:eve.clientX,y:eve.clientY}},()=>{this.calculateResultantAngle(diffY,[1,0,0])});    
+            else
+            this.setState({mousePoint:{x:eve.clientX,y:eve.clientY}},()=>{this.calculateResultantAngle(diffX,[0,1,0])});  
         }
     }
 
@@ -168,8 +162,7 @@ class CubeContainer extends Component {
             <div>
                 <div style={{position: 'absolute',zIndex:1,width:'150px'}}>
                     <input type="text" style={{'min-width':'50px'}} value={this.state.roationVector.join()} onChange={this.directionChange}/>
-                    <input type="number" style={{'width':'50px'}} value={this.state.angleOfRotation} onChange={this.angleChange}/>
-                    <button onClick={this.turn}>Turn</button>
+                    <span>{this.state.angleOfRotation}</span>
                     {this.state.mousePoint?this.state.mousePoint.y:''}
                 </div>
                 <div className="cube-container"
