@@ -31,22 +31,20 @@ class Cube extends Component {
     onTouchStart(eve) {
         eve.stopPropagation();
         this.setState({ touchStarted: true });
-        this.setState({ touchStarted: true, mousePoint: { x: eve.clientX, y: eve.clientY } })
+        this.setState({ touchStarted: true, mousePoint: { x: eve.clientX, y: eve.clientY } });
     }
 
     onTouchMove(eve) {
         if (this.state.touchStarted) {
-            let diffY = eve.clientY - this.state.mousePoint.y;
+            let diffY = this.state.mousePoint.y-eve.clientY;
             let diffX = eve.clientX - this.state.mousePoint.x;
-            if (Math.abs(diffY) > Math.abs(diffX))
-                this.setState({ mousePoint: { x: eve.clientX, y: eve.clientY } }, () => { this.calculateResultantAngle(diffY, [1, 0, 0]) });
-            else
-                this.setState({ mousePoint: { x: eve.clientX, y: eve.clientY } }, () => { this.calculateResultantAngle(diffX, [0, 1, 0]) });
+            this.props.rotateCubes(diffX,diffY,this.props.translate);
+            this.setState({mousePoint: { x: eve.clientX, y: eve.clientY } });
         }
     }
     
     onTouchEnd() {
-        //this.setState({ touchStarted: false, mousePoint: {} })
+        this.setState({ touchStarted: false, mousePoint: {} })
     }
 
     render() {
