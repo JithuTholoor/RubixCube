@@ -36,7 +36,7 @@ class Cube extends Component {
 
     onTouchMove(eve) {
         if (this.state.touchStarted) {
-            let diffY = this.state.mousePoint.y-eve.clientY;
+            let diffY = eve.clientY -this.state.mousePoint.y;
             let diffX = eve.clientX - this.state.mousePoint.x;
             this.props.rotateCubes(diffX,diffY,this.props.translate);
             this.setState({mousePoint: { x: eve.clientX, y: eve.clientY } });
