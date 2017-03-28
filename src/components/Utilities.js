@@ -11,15 +11,15 @@ export const calcPosition = (position, roationVector, angleOfRotation) => {
     const angle = angleOfRotation;
     let x = position[0] * (cos(angle) + ux * ux * (1 - cos(angle))) +
         position[1] * (ux * uy * (1 - cos(angle)) - uz * sin(angle)) +
-        position[2] * (ux * uz * (1 - cos(angle)) + uy * sin(angle))
+        position[2] * (ux * uz * (1 - cos(angle)) + uy * sin(angle));
 
     let y = position[0] * (uy * ux * (1 - cos(angle)) + uz * sin(angle)) +
         position[1] * (cos(angle) + uy * uy * (1 - cos(angle))) +
-        position[2] * (uy * uz * (1 - cos(angle)) - ux * sin(angle))
+        position[2] * (uy * uz * (1 - cos(angle)) - ux * sin(angle));
 
     let z = position[0] * (uz * ux * (1 - cos(angle)) - uy * sin(angle)) +
         position[1] * (uz * uy * (1 - cos(angle)) + ux * sin(angle)) +
-        position[2] * (cos(angle) + uz * uz * (1 - cos(angle)))
+        position[2] * (cos(angle) + uz * uz * (1 - cos(angle)));
     return [x, y, z];
 };
 
@@ -32,15 +32,15 @@ export const calculateResultantAngle = (alpha, roationVector, currentRotationVec
     const lx = roationVector[0];
     const ly = roationVector[1];
     const lz = roationVector[2];
-    
+
     const mx = currentRotationVector[0];
     const my = currentRotationVector[1];
     const mz = currentRotationVector[2];
 
     const gamaInverse=cos(alpha / 2) * cos(beta / 2) - sin(alpha / 2) * sin(beta / 2) * (lx * mx + ly * my + lz * mz);
     const gama = 2 * toDegrees(Math.acos(
-        Math.abs(gamaInverse)>1?gamaInverse/Math.abs(gamaInverse):gamaInverse
-    ));
+            Math.abs(gamaInverse)>1?gamaInverse/Math.abs(gamaInverse):gamaInverse
+        ));
 
     const nx = ((
         sin(alpha / 2) * cos(beta / 2) * lx +
@@ -59,11 +59,19 @@ export const calculateResultantAngle = (alpha, roationVector, currentRotationVec
         cos(alpha / 2) * sin(beta / 2) * mz +
         sin(alpha / 2) * sin(beta / 2) * (lx * my - ly * mx)
     ) / sin(gama / 2))
-    return { gama, roationVector: [isNaN(nx) || !isFinite(nx)?1:nx, isNaN(ny)||!isFinite(nx)?1:ny, isNaN(nz)||!isFinite(nx)?1:nz] };
+    return { gama, rotationVector: [isNaN(nx) || !isFinite(nx)?1:nx, isNaN(ny)||!isFinite(nx)?1:ny, isNaN(nz)||!isFinite(nx)?1:nz] };
 };
 
 export const getCubePositionDiffrence=(movedPosition,currentPosition,xMove,yMove)=>{
     const xDiff=(currentPosition[0]+xMove) - movedPosition[0];
     const yDiff=(currentPosition[1]+yMove) - movedPosition[1];
     return Math.sqrt(xDiff*xDiff + yDiff*yDiff);
-}
+};
+
+export const getTouchPositions=(eve)=>{
+    if(eve.targetTouches){
+        return {clientX:eve.targetTouches[0].clientX,clientY:eve.targetTouches[0].clientY};
+    }else{
+        return {clientX: eve.clientX, clientY: eve.clientY};
+    }
+};
