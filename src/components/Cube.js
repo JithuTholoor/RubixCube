@@ -26,10 +26,14 @@ class Cube extends Component {
 
     componentDidMount() {
         document.addEventListener('mouseup', this.onTouchEnd);
+        document.addEventListener('touchend', this.onTouchEnd);          
+        document.addEventListener('touchcancel', this.onTouchEnd);        
     }
 
     componentWillUnmount() {
         document.removeEventListener('mouseup', this.onTouchEnd);
+        document.removeEventListener('touchend', this.onTouchEnd);
+        document.removeEventListener('touchcancel', this.onTouchEnd);
     }
 
     cubePosition() {

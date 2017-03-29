@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import Cube,{cubeWidth} from './Cube';
-import { calcPosition,
+import Cube, { cubeWidth } from './Cube';
+import {
+    calcPosition,
     calculateResultantAngle,
     getCubePositionDiffrence,
-    getTouchPositions} from './Utilities';
+    getTouchPositions
+} from './Utilities';
 
 class CubeContainer extends Component {
 
@@ -51,35 +53,43 @@ class CubeContainer extends Component {
         this.onTouchEnd = this.onTouchEnd.bind(this);
         this.rotateCube = this.rotateCube.bind(this);
         this.reArrangeCubes = this.reArrangeCubes.bind(this);
-        this.rotateCubeSpace=this.rotateCubeSpace.bind(this);
+        this.rotateCubeSpace = this.rotateCubeSpace.bind(this);
     }
 
     componentDidMount() {
         //adding listener for mouseup
         document.addEventListener('mouseup', this.onTouchEnd);
-        this.rotateCubeSpace(120,0);
+        document.addEventListener('touchend', this.onTouchEnd);
+        document.addEventListener('touchcancel', this.onTouchEnd);
+
+        //Initial position
+        this.rotateCubeSpace(120, 0);
     }
 
     componentWillUnmount() {
-        //removeEventListener
+        //removeEventListener        
         document.removeEventListener('mouseup', this.onTouchEnd);
+        document.removeEventListener('touchend', this.onTouchEnd);
+        document.removeEventListener('touchcancel', this.onTouchEnd);
     }
 
     /**return css parameters for orientation */
     getOrientation(index) {
         return [this.state.rotationVector[index][0],
-            this.state.rotationVector[index][1],
-            this.state.rotationVector[index][2],
-            this.state.angleOfRotation[index]];
+        this.state.rotationVector[index][1],
+        this.state.rotationVector[index][2],
+        this.state.angleOfRotation[index]];
     }
 
     /**Touch events */
     onTouchStart(eve) {
-        this.setState({touchStarted: true, mousePoint:
-        {x: getTouchPositions(eve).clientX, y: getTouchPositions(eve).clientY}});
+        this.setState({
+            touchStarted: true, mousePoint:
+                { x: getTouchPositions(eve).clientX, y: getTouchPositions(eve).clientY }
+        });
     }
 
-    rotateCubeSpace(diffX,diffY){
+    rotateCubeSpace(diffX, diffY) {
         let arr = this.state.positions.slice();
         let angleOfRotationArr = [];
         let rotationVectorArr = [];
@@ -106,14 +116,14 @@ class CubeContainer extends Component {
         if (this.state.touchStarted) {
             let diffY = getTouchPositions(eve).clientY - this.state.mousePoint.y;
             let diffX = getTouchPositions(eve).clientX - this.state.mousePoint.x;
-            this.setState({mousePoint: {x: getTouchPositions(eve).clientX, y: getTouchPositions(eve).clientY}}, () => {
-                this.rotateCubeSpace(diffX,diffY);
+            this.setState({ mousePoint: { x: getTouchPositions(eve).clientX, y: getTouchPositions(eve).clientY } }, () => {
+                this.rotateCubeSpace(diffX, diffY);
             });
         }
     }
 
     onTouchEnd() {
-        this.setState({touchStarted: false, mousePoint: {}});
+        this.setState({ touchStarted: false, mousePoint: {} });
         if (this.state.faceRotationIndex) {
             this.reArrangeCubes();
         }
@@ -121,18 +131,18 @@ class CubeContainer extends Component {
 
     reArrangeCubes() {
         if (this.state.faceRotationAngle % 90 == 0) {
-            this.setState({faceRotationAngle: 0, faceRotationIndex: null,autoRotation:undefined});
+            this.setState({ faceRotationAngle: 0, faceRotationIndex: null, autoRotation: undefined });
             return;
         }
-        this.rotateCube(Math.sqrt(.5), Math.sqrt(.5), null,true);
+        this.rotateCube(Math.sqrt(.5), Math.sqrt(.5), null, true);
         setTimeout(this.reArrangeCubes, .001);
     }
 
     /**Method triggered by child cube on cube movement*/
-    rotateCube(xAxisMove, yAxisMove, cubePosition,autoMove) {
+    rotateCube(xAxisMove, yAxisMove, cubePosition, autoMove) {
 
         /** avoiding multiple simultaneous move*/
-        if( this.state.autoRotation && !autoMove)
+        if (this.state.autoRotation && !autoMove)
             return;
 
         /** check for no movement*/
@@ -178,7 +188,7 @@ class CubeContainer extends Component {
                     reverseAngle = true;
                 }
             }
-            this.setState({'faceRotationIndex': index, "reverseAngle": reverseAngle});
+            this.setState({ 'faceRotationIndex': index, "reverseAngle": reverseAngle });
         }
         else {
             reverseAngle = this.state.reverseAngle;
@@ -208,25 +218,25 @@ class CubeContainer extends Component {
                 angleOfRotation: angleOfRotation,
                 rotationVector: rotationVector,
                 faceRotationAngle: this.state.faceRotationAngle + (reverseAngle ? -currentMove : currentMove),
-                autoRotation:autoMove
+                autoRotation: autoMove
             }
         );
     }
 
     render() {
         return (
-                <div className="cube-container"
-                     onMouseDown={this.onTouchStart}
-                     onTouchStart={this.onTouchStart}
-                     onMouseMove={this.onTouchMove}
-                     onTouchMove={this.onTouchMove}>
-                    {this.state.positions.map((val, index) => {
-                        return (
-                            <Cube key={index} rotateCubes={this.rotateCube}
-                                  translate={this.state.positions[index]} orientation={this.getOrientation(index)}/>
-                        )
-                    })}
-                </div>
+            <div className="cube-container"
+                onMouseDown={this.onTouchStart}
+                onTouchStart={this.onTouchStart}
+                onMouseMove={this.onTouchMove}
+                onTouchMove={this.onTouchMove}>
+                {this.state.positions.map((val, index) => {
+                    return (
+                        <Cube key={index} rotateCubes={this.rotateCube}
+                            translate={this.state.positions[index]} orientation={this.getOrientation(index)} />
+                    )
+                })}
+            </div>
         );
     }
 }
