@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import {getTouchPositions} from './Utilities';
+import {getTouchPositions} from '../utilities/utilities';
 export const cubeWidth = 50;
 
 class Cube extends Component {
 
     static propTypes = {
-        rotateCubes: React.PropTypes.func
+        rotateCubes: React.PropTypes.func,
+        translate:React.PropTypes.array,
+        orientation:React.PropTypes.array
     };
 
     constructor(props) {

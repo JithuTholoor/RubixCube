@@ -5,7 +5,7 @@ import {
     calculateResultantAngle,
     getCubePositionDiffrence,
     getTouchPositions
-} from './Utilities';
+} from '../utilities/utilities';
 
 class CubeContainer extends Component {
 
@@ -149,7 +149,7 @@ class CubeContainer extends Component {
         if (xAxisMove == 0 && yAxisMove == 0)
             return;
 
-        /**resultant move */
+        /**resultant move */ 
         let currentMove = 1;
 
         /**fetching state data */
