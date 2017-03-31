@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import {getTouchPositions} from './Utilities';
+import {getTouchPositions} from '../utilities/utilities';
 export const cubeWidth = 50;
 
 class Cube extends Component {
 
     static propTypes = {
-        rotateCubes: React.PropTypes.func
+        rotateCubes: React.PropTypes.func,
+        translate: React.PropTypes.array,
+        orientation: React.PropTypes.array
     };
 
     constructor(props) {
@@ -26,25 +28,26 @@ class Cube extends Component {
 
     componentDidMount() {
         document.addEventListener('mouseup', this.onTouchEnd);
+        document.addEventListener('touchend', this.onTouchEnd);
+        document.addEventListener('touchcancel', this.onTouchEnd);
     }
 
     componentWillUnmount() {
         document.removeEventListener('mouseup', this.onTouchEnd);
+        document.removeEventListener('touchend', this.onTouchEnd);
+        document.removeEventListener('touchcancel', this.onTouchEnd);
     }
 
     cubePosition() {
         return (
             this.props.translate ? {
-                transform: `translate3d(${this.props.translate[0]}px,
-        ${this.props.translate[1]}px,
-        ${this.props.translate[2]}px)
+                transform: `translate3d(${this.props.translate[0]}px,${this.props.translate[1]}px,${this.props.translate[2]}px)
          rotate3d(${this.props.orientation[0]},${this.props.orientation[1]},${this.props.orientation[2]},${this.props.orientation[3]}deg)`
             } : {});
     }
 
     onTouchStart(eve) {
         eve.stopPropagation();
-        this.setState({touchStarted: true});
         this.setState({
             touchStarted: true,
             mousePoint: {x: getTouchPositions(eve).clientX, y: getTouchPositions(eve).clientY}
