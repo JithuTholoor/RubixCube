@@ -9,4 +9,32 @@ describe('Cube', () => {
         expect(result).toBeDefined();
     });
 
-});
+    it('cubePosition returns style for cube', ()=> {
+        const tree = shallow(<Cube rotateCubes={jest.fn()} translate={[0,0,0]} orientation={[1,0,0,0]}/>);
+        const result = tree.instance().cubePosition();
+        expect(result.transform).toEqual(`translate3d(0px,0px,0px)
+         rotate3d(1,0,0,0deg)`);
+    });
+
+    describe('events',()=>{
+        let tree;
+        const rotateCubesMock= jest.fn()
+        beforeAll(()=>{
+            tree = shallow(<Cube rotateCubes={rotateCubesMock} translate={[0,0,0]} orientation={[1,0,0,0]}/>);
+        });
+        it('mouse down',()=>{
+            expect(tree.instance().state.touchStarted).toBe(false);
+            tree.simulate('mousedown',{stopPropagation:jest.fn()});
+            expect(tree.instance().state.touchStarted).toBe(true);
+        });
+        it('mouse move',()=>{
+            tree.simulate('mousemove',{clientX:1,clientY:1});
+            expect(tree.instance().state.touchStarted).toBe(true);
+            expect(tree.instance().state.mousePoint).toEqual({x:1,y:1});
+            expect(rotateCubesMock).toBeCalled();
+        });
+
+    })
+
+})
+;
