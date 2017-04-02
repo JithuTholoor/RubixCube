@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import Cube, { cubeWidth } from './Cube';
+import Cube, { cubeWidth, facePosition } from './Cube';
 import {
     calcPosition,
     calculateResultantAngle,
     getCubePositionDiffrence,
     getTouchPositions
 } from '../utilities/utilities';
+
+
 
 class CubeContainer extends Component {
 
@@ -85,7 +87,7 @@ class CubeContainer extends Component {
     onTouchStart(eve) {
         this.setState({
             touchStarted: true, mousePoint:
-                { x: getTouchPositions(eve).clientX, y: getTouchPositions(eve).clientY }
+            { x: getTouchPositions(eve).clientX, y: getTouchPositions(eve).clientY }
         });
     }
 
@@ -130,27 +132,30 @@ class CubeContainer extends Component {
     }
 
     reArrangeCubes() {
-        if (this.state.faceRotationAngle % 90 == 0) {
+        if (this.state.faceRotationAngle % 90 === 0) {
             this.setState({ faceRotationAngle: 0, faceRotationIndex: null, autoRotation: undefined });
             return;
         }
-        this.rotateCube(Math.sqrt(.5), Math.sqrt(.5), null, true);
-        setTimeout(this.reArrangeCubes, .001);
+        const currentMove = Math.abs(this.state.faceRotationAngle % 90) < 80 ? 5 : 1;
+        this.setState({ autoRotation: true, currentMove }, () => {
+            this.rotateCube(Math.sqrt(.5), Math.sqrt(.5), null);
+            setTimeout(this.reArrangeCubes, 1);
+        });
     }
 
     /**Method triggered by child cube on cube movement*/
-    rotateCube(xAxisMove, yAxisMove, cubePosition, autoMove) {
+    rotateCube(xAxisMove, yAxisMove, cubePosition, touchedFace, cubeOrientation) {
 
-        /** avoiding multiple simultaneous move*/
-        if (this.state.autoRotation && !autoMove)
+        //avoid face roation while auto move.
+        if (this.state.autoRotation && touchedFace)
             return;
 
         /** check for no movement*/
-        if (xAxisMove == 0 && yAxisMove == 0)
+        if (xAxisMove === 0 && yAxisMove === 0)
             return;
 
-        /**resultant move */ 
-        let currentMove = 1;
+        /**resultant move */
+        let currentMove = touchedFace ? Math.round(Math.sqrt(xAxisMove * xAxisMove + yAxisMove * yAxisMove)) : this.state.currentMove;
 
         /**fetching state data */
         let rotationVector = this.state.rotationVector.slice();
@@ -165,29 +170,50 @@ class CubeContainer extends Component {
 
         let index = 0;
         let reverseAngle = false;
-        if (!autoMove) {
-            /**Finding face on which rotation gives matching cube movement */
+        if (touchedFace) {
             let movedPosition;
             let diff = 1000;
-            for (let i in sixFaceAxis) {
-                movedPosition = calcPosition(cubePosition.slice(), sixFaceAxis[i].slice(), currentMove);
-                if (diff > getCubePositionDiffrence(movedPosition, cubePosition, xAxisMove, yAxisMove)
-                    && Math.abs((cubePosition[0] * sixFaceAxis[i][0] + cubePosition[1] * sixFaceAxis[i][1] + cubePosition[2] * sixFaceAxis[i][2]) - cubeWidth) < .1
-                ) {
+
+            //check for face roation vector defined
+            if (this.state.faceRotationAngle) {
+                index = this.state.faceRotationIndex;
+                movedPosition = calcPosition(cubePosition.slice(), sixFaceAxis[index].slice(), currentMove);
+                if (diff > getCubePositionDiffrence(movedPosition, cubePosition, xAxisMove, yAxisMove)) {
                     diff = getCubePositionDiffrence(movedPosition, cubePosition, xAxisMove, yAxisMove);
-                    index = i;
                     reverseAngle = false;
                 }
 
-                movedPosition = calcPosition(cubePosition.slice(), sixFaceAxis[i].slice(), -currentMove);
-                if (diff > getCubePositionDiffrence(movedPosition, cubePosition, xAxisMove, yAxisMove)
-                    && Math.abs((cubePosition[0] * sixFaceAxis[i][0] + cubePosition[1] * sixFaceAxis[i][1] + cubePosition[2] * sixFaceAxis[i][2]) - cubeWidth) < .1
-                ) {
+                movedPosition = calcPosition(cubePosition.slice(), sixFaceAxis[index].slice(), -currentMove);
+                if (diff > getCubePositionDiffrence(movedPosition, cubePosition, xAxisMove, yAxisMove)) {
                     diff = getCubePositionDiffrence(movedPosition, cubePosition, xAxisMove, yAxisMove);
-                    index = i;
                     reverseAngle = true;
                 }
             }
+            //fresh rotation
+            else {
+                let faceVector = [];
+                faceVector = calcPosition(facePosition[touchedFace], [cubeOrientation[0], cubeOrientation[1], cubeOrientation[2]], cubeOrientation[3]);
+                /**Finding face on which rotation gives matching cube movement */
+                for (let i in sixFaceAxis) {
+                    if (Math.abs((cubePosition[0] * sixFaceAxis[i][0] + cubePosition[1] * sixFaceAxis[i][1] + cubePosition[2] * sixFaceAxis[i][2]) - cubeWidth) < .1
+                        && Math.abs((faceVector[0] * sixFaceAxis[i][0] + faceVector[1] * sixFaceAxis[i][1] + faceVector[2] * sixFaceAxis[i][2]) - cubeWidth) > .1) {
+                        movedPosition = calcPosition(cubePosition.slice(), sixFaceAxis[i].slice(), currentMove);
+                        if (diff > getCubePositionDiffrence(movedPosition, cubePosition, xAxisMove, yAxisMove)) {
+                            diff = getCubePositionDiffrence(movedPosition, cubePosition, xAxisMove, yAxisMove);
+                            index = i;
+                            reverseAngle = false;
+                        }
+
+                        movedPosition = calcPosition(cubePosition.slice(), sixFaceAxis[i].slice(), -currentMove);
+                        if (diff > getCubePositionDiffrence(movedPosition, cubePosition, xAxisMove, yAxisMove)) {
+                            diff = getCubePositionDiffrence(movedPosition, cubePosition, xAxisMove, yAxisMove);
+                            index = i;
+                            reverseAngle = true;
+                        }
+                    }
+                }
+            }
+
             this.setState({ 'faceRotationIndex': index, "reverseAngle": reverseAngle });
         }
         else {
@@ -217,8 +243,7 @@ class CubeContainer extends Component {
                 positions: arr,
                 angleOfRotation: angleOfRotation,
                 rotationVector: rotationVector,
-                faceRotationAngle: this.state.faceRotationAngle + (reverseAngle ? -currentMove : currentMove),
-                autoRotation: autoMove
+                faceRotationAngle: this.state.faceRotationAngle + (reverseAngle ? -currentMove : currentMove)
             }
         );
     }

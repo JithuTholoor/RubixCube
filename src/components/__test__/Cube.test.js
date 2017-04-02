@@ -16,6 +16,11 @@ describe('Cube', () => {
          rotate3d(1,0,0,0deg)`);
     });
 
+    it('six faces',()=>{
+        const tree = shallow(<Cube rotateCubes={jest.fn()} translate={[0,0,0]} orientation={[1,0,0,0]}/>);
+        expect(tree.find('.face').length).toBe(6);
+    })
+
     describe('will unmount events',()=>{
         let tree;
         const rotateCubesMock= jest.fn()
@@ -39,12 +44,12 @@ describe('Cube', () => {
 
         it('mouse down',()=>{
             expect(tree.instance().state.touchStarted).toBe(false);
-            tree.simulate('mousedown',{stopPropagation:jest.fn()});
+            tree.find('.face').first().simulate('mousedown',{stopPropagation:jest.fn()});
             expect(tree.instance().state.touchStarted).toBe(true);
         });
 
         it('mouse move',()=>{
-            tree.simulate('mousemove',{clientX:1,clientY:1});
+            tree.find('.face').first().simulate('mousemove',{clientX:1,clientY:1});
             expect(tree.instance().state.touchStarted).toBe(true);
             expect(tree.instance().state.mousePoint).toEqual({x:1,y:1});
             expect(rotateCubesMock).toBeCalled();
@@ -65,17 +70,16 @@ describe('Cube', () => {
 
         it('touch start',()=>{
             expect(tree.instance().state.touchStarted).toBe(false);
-            tree.simulate('touchstart',{stopPropagation:jest.fn()});
+            tree.find('.face').first().simulate('touchstart',{stopPropagation:jest.fn()});
             expect(tree.instance().state.touchStarted).toBe(true);
         });
 
         it('touch move',()=>{
-            tree.simulate('touchmove',{stopPropagation:jest.fn(), targetTouches:[{clientX:1,clientY:1}]});
+            tree.find('.face').first().simulate('touchmove',{stopPropagation:jest.fn(), targetTouches:[{clientX:1,clientY:1}]});
             expect(tree.instance().state.touchStarted).toBe(true);
             expect(tree.instance().state.mousePoint).toEqual({x:1,y:1});
             expect(rotateCubesMock).toBeCalled();
         });
     });    
 
-})
-;
+});

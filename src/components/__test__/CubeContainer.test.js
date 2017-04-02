@@ -75,25 +75,35 @@ describe('CubeContainer', () => {
 
     describe('Cube face rotation', () => {
         let tree;
-        beforeAll(() => {
+        beforeEach(() => {
             tree = shallow(<CubeContainer />);
         });
 
         it('face rotation', () => {
-            tree.instance().rotateCube(0, 1, [1, 0, 0]);
-            expect(tree.instance().state.positions[26]).toEqual([49.11976443595539, 50.86500507968374, 50]);
+            tree.instance().rotateCube(0, 1, [-18.30127018922195, -50, 68.30127018922192], 'left', [0, 1, 0, 119.99999999999999]);
+            expect(tree.instance().state.positions[5]).toEqual([-49.992384757819565, -50, -0.8726203218641756]);
+            tree.instance().rotateCube(0, 1, tree.instance().state.positions[5], 'left',
+                [-0.017451520543536315, 0.9997969423376053, -0.010075640083578979, 120.01007615158832]);
+            expect(tree.instance().state.positions[5]).toEqual([-50.00000000000001, -50, 0]);
         });
 
         it('face rotation -reverse', () => {
-            tree.instance().rotateCube(0, -1, [1, 0, 0], true);            
-            expect(tree.instance().state.positions[26]).toEqual( [  48.22456651582974, 51.71451618607984, 50 ]);
+            tree.instance().rotateCube(1, 0, [-18.30127018922195, -50, 68.30127018922192], 'left', [0, 1, 0, 119.99999999999999]);
+            expect(tree.instance().state.positions[5]).toEqual([-49.992384757819565, -50, 0.8726203218641756]);
         });
 
         it('face rotation - auto complete', () => {
-            tree.setState({ autoRotation: true });
-            tree.instance().rotateCube(0, 1, [1, 0, 0], true);    
-            expect(tree.instance().state.positions[26]).toEqual( [ 47.31467892558151, 52.54827454987589, 50]);
+            tree.instance().rotateCube(0, 1, [-18.30127018922195, -50, 68.30127018922192], 'left', [0, 1, 0, 119.99999999999999]);
+            tree.setState({ currentMove: 1 });
+            tree.instance().reArrangeCubes();
+            //tree.instance().rotateCube(0, 1, tree.instance().state.positions[5]);
+            expect(tree.instance().state.positions[5]).toEqual([-49.72609476841367, -50, -5.226423163382674]);
         });
+
+        it('no rotation when x and y values are zero', () => {
+            tree.instance().rotateCube(0, 0, [-18.30127018922195, -50, 68.30127018922192], 'left', [0, 1, 0, 119.99999999999999]);
+            expect(tree.instance().state.positions[5]).toEqual([-50, -50, 0]);
+        })
 
     });
 
