@@ -97,7 +97,7 @@ describe('CubeContainer', () => {
             tree.setState({ currentMove: 1 });
             tree.instance().reArrangeCubes();
             //tree.instance().rotateCube(0, 1, tree.instance().state.positions[5]);
-            expect(tree.instance().state.positions[5]).toEqual([-49.72609476841367, -50, -5.226423163382674]);
+            expect(tree.instance().state.positions[5]).toEqual([-50.00000000000001, -50, 0]);
         });
 
         it('no rotation when x and y values are zero', () => {
