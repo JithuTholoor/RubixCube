@@ -8,7 +8,6 @@ import {
 } from '../utilities/utilities';
 
 
-
 class CubeContainer extends Component {
 
     constructor(props) {
@@ -78,16 +77,15 @@ class CubeContainer extends Component {
     /**return css parameters for orientation */
     getOrientation(index) {
         return [this.state.rotationVector[index][0],
-        this.state.rotationVector[index][1],
-        this.state.rotationVector[index][2],
-        this.state.angleOfRotation[index]];
+            this.state.rotationVector[index][1],
+            this.state.rotationVector[index][2],
+            this.state.angleOfRotation[index]];
     }
 
     /**Touch events */
     onTouchStart(eve) {
         this.setState({
-            touchStarted: true, mousePoint:
-            { x: getTouchPositions(eve).clientX, y: getTouchPositions(eve).clientY }
+            touchStarted: true, mousePoint: {x: getTouchPositions(eve).clientX, y: getTouchPositions(eve).clientY}
         });
     }
 
@@ -118,14 +116,14 @@ class CubeContainer extends Component {
         if (this.state.touchStarted) {
             let diffY = getTouchPositions(eve).clientY - this.state.mousePoint.y;
             let diffX = getTouchPositions(eve).clientX - this.state.mousePoint.x;
-            this.setState({ mousePoint: { x: getTouchPositions(eve).clientX, y: getTouchPositions(eve).clientY } }, () => {
+            this.setState({mousePoint: {x: getTouchPositions(eve).clientX, y: getTouchPositions(eve).clientY}}, () => {
                 this.rotateCubeSpace(diffX, diffY);
             });
         }
     }
 
     onTouchEnd() {
-        this.setState({ touchStarted: false, mousePoint: {} });
+        this.setState({touchStarted: false, mousePoint: {}});
         if (this.state.faceRotationIndex) {
             this.reArrangeCubes();
         }
@@ -133,13 +131,19 @@ class CubeContainer extends Component {
 
     reArrangeCubes() {
         if (this.state.faceRotationAngle % 90 === 0) {
-            this.setState({ faceRotationAngle: 0, faceRotationIndex: null, autoRotation: undefined });
+            this.setState({faceRotationAngle: 0, faceRotationIndex: null, autoRotation: undefined});
             return;
         }
-        const currentMove = Math.abs(this.state.faceRotationAngle % 90) < 80 ? 5 : 1;
-        this.setState({ autoRotation: true, currentMove }, () => {
+        const currentMove =
+            Math.abs(this.state.faceRotationAngle % 90) < 80 &&
+            Math.abs(this.state.faceRotationAngle % 90) > 10
+                ? 2 : 1;
+
+        this.setState({autoRotation: true, currentMove,
+            reverseAngle:(!this.state.autoRotation &&((Math.abs(this.state.faceRotationAngle % 90)<30)))?
+                !this.state.reverseAngle:this.state.reverseAngle}, () => {
             this.rotateCube(Math.sqrt(.5), Math.sqrt(.5), null);
-            setTimeout(this.reArrangeCubes, 1);
+            setTimeout(this.reArrangeCubes, .001);
         });
     }
 
@@ -214,7 +218,7 @@ class CubeContainer extends Component {
                 }
             }
 
-            this.setState({ 'faceRotationIndex': index, "reverseAngle": reverseAngle });
+            this.setState({'faceRotationIndex': index, "reverseAngle": reverseAngle});
         }
         else {
             reverseAngle = this.state.reverseAngle;
@@ -251,14 +255,14 @@ class CubeContainer extends Component {
     render() {
         return (
             <div className="cube-container"
-                onMouseDown={this.onTouchStart}
-                onTouchStart={this.onTouchStart}
-                onMouseMove={this.onTouchMove}
-                onTouchMove={this.onTouchMove}>
+                 onMouseDown={this.onTouchStart}
+                 onTouchStart={this.onTouchStart}
+                 onMouseMove={this.onTouchMove}
+                 onTouchMove={this.onTouchMove}>
                 {this.state.positions.map((val, index) => {
                     return (
                         <Cube key={index} rotateCubes={this.rotateCube}
-                            translate={this.state.positions[index]} orientation={this.getOrientation(index)} />
+                              translate={this.state.positions[index]} orientation={this.getOrientation(index)}/>
                     )
                 })}
             </div>
