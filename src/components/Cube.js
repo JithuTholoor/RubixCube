@@ -9,7 +9,7 @@ export const facePosition = {
     back: [0, 0, -50],
     top: [0, -50, 0],
     bottom: [0, 50, 0]
-}
+};
 
 class Cube extends Component {
 
@@ -32,7 +32,13 @@ class Cube extends Component {
         faceColors.right = this.props.translate[0] === cubeWidth ? '#FF6C00' : '';
         faceColors.front = this.props.translate[2] === cubeWidth ? '#009D54' : '';
         faceColors.back = this.props.translate[2] === -cubeWidth ? '#3D81F6' : '';
-        this.state = { touchStarted: false, faceColors: faceColors };
+
+        if (Math.abs(this.props.translate[0]) +
+            Math.abs(this.props.translate[1]) +
+            Math.abs(this.props.translate[2]) == 50) {
+            this.disableFaceRotation=true;
+        }
+        this.state = {touchStarted: false, faceColors: faceColors};
     }
 
     componentDidMount() {
@@ -56,10 +62,12 @@ class Cube extends Component {
     }
 
     onTouchStart(eve, face) {
+        if(this.disableFaceRotation)
+            return true;
         eve.stopPropagation();
         this.setState({
             touchStarted: true,
-            mousePoint: { x: getTouchPositions(eve).clientX, y: getTouchPositions(eve).clientY },
+            mousePoint: {x: getTouchPositions(eve).clientX, y: getTouchPositions(eve).clientY},
             touchedFace: face
         });
     }
@@ -69,14 +77,14 @@ class Cube extends Component {
             let diffY = getTouchPositions(eve).clientY - this.state.mousePoint.y;
             let diffX = getTouchPositions(eve).clientX - this.state.mousePoint.x;
             this.props.rotateCubes(diffX, diffY, this.props.translate, this.state.touchedFace, this.props.orientation);
-            this.setState({ mousePoint: { x: getTouchPositions(eve).clientX, y: getTouchPositions(eve).clientY } });
+            this.setState({mousePoint: {x: getTouchPositions(eve).clientX, y: getTouchPositions(eve).clientY}});
         }
         if (eve.targetTouches)
             eve.stopPropagation();
     }
 
     onTouchEnd() {
-        this.setState({ touchStarted: false, mousePoint: {}, touchedFace: undefined })
+        this.setState({touchStarted: false, mousePoint: {}, touchedFace: undefined})
     }
 
     render() {
@@ -84,10 +92,12 @@ class Cube extends Component {
             <div className="cube" style={this.cubePosition()}>
                 {faceArray.map((face, index) => {
                     return <div key={index}
-                        onMouseMove={this.onTouchMove}
-                        onTouchMove={this.onTouchMove}
-                        onMouseDown={(evt) => this.onTouchStart(evt, face)} onTouchStart={(evt) => this.onTouchStart(evt, face)}
-                        className={'face ' + face} style={{ 'backgroundColor': this.state.faceColors[face] }}></div>
+                                onMouseMove={this.onTouchMove}
+                                onTouchMove={this.onTouchMove}
+                                onMouseDown={(evt) => this.onTouchStart(evt, face)}
+                                onTouchStart={(evt) => this.onTouchStart(evt, face)}
+                                className={'face ' + face}
+                                style={{ 'backgroundColor': this.state.faceColors[face] }}></div>
                 })}
             </div>
         );
