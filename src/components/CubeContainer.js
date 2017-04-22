@@ -137,7 +137,7 @@ class CubeContainer extends Component {
         const currentMove =
             Math.abs(this.state.faceRotationAngle % 90) < 80 &&
             Math.abs(this.state.faceRotationAngle % 90) > 10
-                ? 2 : 1;
+                ? 3 : 1;
 
         this.setState({autoRotation: true, currentMove,
             reverseAngle:(!this.state.autoRotation &&((Math.abs(this.state.faceRotationAngle % 90)<30)))?
