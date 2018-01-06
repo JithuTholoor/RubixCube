@@ -159,7 +159,7 @@ class CubeContainer extends Component {
             return;
 
         /**resultant move */
-        let currentMove = touchedFace ? Math.round(Math.sqrt(xAxisMove * xAxisMove + yAxisMove * yAxisMove)) : this.state.currentMove;
+        const currentMove = touchedFace ? Math.round(Math.sqrt(xAxisMove * xAxisMove + yAxisMove * yAxisMove)) : this.state.currentMove;
 
         /**fetching state data */
         let rotationVector = this.state.rotationVector.slice();
@@ -167,10 +167,11 @@ class CubeContainer extends Component {
         let arr = this.state.positions.slice();
 
         /**face vectors for all six faces */
-        let sixFaceAxis = [[0, 0, 1], [0, 0, -1], [0, 1, 0], [0, -1, 0], [1, 0, 0], [-1, 0, 0]];
-        for (let f in sixFaceAxis) {
-            sixFaceAxis[f] = calcPosition(sixFaceAxis[f], rotationVector[0], angleOfRotation[0]);
-        }
+        const sixFaceAxis = [[0, 0, 1], [0, 0, -1], [0, 1, 0], [0, -1, 0], [1, 0, 0], [-1, 0, 0]];
+    
+        sixFaceAxis.forEach((faceAxis,f) => {
+            sixFaceAxis[f]= calcPosition(faceAxis, rotationVector[0], angleOfRotation[0]);
+        });
 
         let index = 0;
         let reverseAngle = false;
