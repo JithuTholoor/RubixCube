@@ -3,12 +3,12 @@ import { getTouchPositions } from '../utilities/utilities';
 export const cubeWidth = 50;
 export const faceArray = ['front', 'back', 'top', 'bottom', 'left', 'right'];
 export const facePosition = {
-    left: [-50, 0, 0],
-    right: [50, 0, 0],
-    front: [0, 0, 50],
-    back: [0, 0, -50],
-    top: [0, -50, 0],
-    bottom: [0, 50, 0]
+    left: [-cubeWidth, 0, 0],
+    right: [cubeWidth, 0, 0],
+    front: [0, 0, cubeWidth],
+    back: [0, 0, -cubeWidth],
+    top: [0, -cubeWidth, 0],
+    bottom: [0, cubeWidth, 0]
 };
 
 class Cube extends Component {
@@ -35,7 +35,7 @@ class Cube extends Component {
 
         if (Math.abs(this.props.translate[0]) +
             Math.abs(this.props.translate[1]) +
-            Math.abs(this.props.translate[2]) == 50) {
+            Math.abs(this.props.translate[2]) == cubeWidth) {
             this.disableFaceRotation=true;
         }
         this.state = {touchStarted: false, faceColors: faceColors};

@@ -77,15 +77,15 @@ class CubeContainer extends Component {
     /**return css parameters for orientation */
     getOrientation(index) {
         return [this.state.rotationVector[index][0],
-            this.state.rotationVector[index][1],
-            this.state.rotationVector[index][2],
-            this.state.angleOfRotation[index]];
+        this.state.rotationVector[index][1],
+        this.state.rotationVector[index][2],
+        this.state.angleOfRotation[index]];
     }
 
     /**Touch events */
     onTouchStart(eve) {
         this.setState({
-            touchStarted: true, mousePoint: {x: getTouchPositions(eve).clientX, y: getTouchPositions(eve).clientY}
+            touchStarted: true, mousePoint: { x: getTouchPositions(eve).clientX, y: getTouchPositions(eve).clientY }
         });
     }
 
@@ -116,14 +116,14 @@ class CubeContainer extends Component {
         if (this.state.touchStarted) {
             let diffY = getTouchPositions(eve).clientY - this.state.mousePoint.y;
             let diffX = getTouchPositions(eve).clientX - this.state.mousePoint.x;
-            this.setState({mousePoint: {x: getTouchPositions(eve).clientX, y: getTouchPositions(eve).clientY}}, () => {
+            this.setState({ mousePoint: { x: getTouchPositions(eve).clientX, y: getTouchPositions(eve).clientY } }, () => {
                 this.rotateCubeSpace(diffX, diffY);
             });
         }
     }
 
     onTouchEnd() {
-        this.setState({touchStarted: false, mousePoint: {}});
+        this.setState({ touchStarted: false, mousePoint: {} });
         if (this.state.faceRotationIndex) {
             this.reArrangeCubes();
         }
@@ -131,17 +131,19 @@ class CubeContainer extends Component {
 
     reArrangeCubes() {
         if (this.state.faceRotationAngle % 90 === 0) {
-            this.setState({faceRotationAngle: 0, faceRotationIndex: null, autoRotation: undefined});
+            this.setState({ faceRotationAngle: 0, faceRotationIndex: null, autoRotation: undefined });
             return;
         }
         const currentMove =
             Math.abs(this.state.faceRotationAngle % 90) < 80 &&
-            Math.abs(this.state.faceRotationAngle % 90) > 10
+                Math.abs(this.state.faceRotationAngle % 90) > 10
                 ? 3 : 1;
 
-        this.setState({autoRotation: true, currentMove,
-            reverseAngle:(!this.state.autoRotation &&((Math.abs(this.state.faceRotationAngle % 90)<30)))?
-                !this.state.reverseAngle:this.state.reverseAngle}, () => {
+        this.setState({
+            autoRotation: true, currentMove,
+            reverseAngle: (!this.state.autoRotation && ((Math.abs(this.state.faceRotationAngle % 90) < 30))) ?
+                !this.state.reverseAngle : this.state.reverseAngle
+        }, () => {
             this.rotateCube(Math.sqrt(.5), Math.sqrt(.5), null);
             setTimeout(this.reArrangeCubes, .001);
         });
@@ -159,7 +161,7 @@ class CubeContainer extends Component {
             return;
 
         /**resultant move */
-        let currentMove = touchedFace ? Math.round(Math.sqrt(xAxisMove * xAxisMove + yAxisMove * yAxisMove)) : this.state.currentMove;
+        const currentMove = touchedFace ? Math.round(Math.sqrt(xAxisMove * xAxisMove + yAxisMove * yAxisMove)) : this.state.currentMove;
 
         /**fetching state data */
         let rotationVector = this.state.rotationVector.slice();
@@ -167,10 +169,11 @@ class CubeContainer extends Component {
         let arr = this.state.positions.slice();
 
         /**face vectors for all six faces */
-        let sixFaceAxis = [[0, 0, 1], [0, 0, -1], [0, 1, 0], [0, -1, 0], [1, 0, 0], [-1, 0, 0]];
-        for (let f in sixFaceAxis) {
-            sixFaceAxis[f] = calcPosition(sixFaceAxis[f], rotationVector[0], angleOfRotation[0]);
-        }
+        const sixFaceAxis = [[0, 0, 1], [0, 0, -1], [0, 1, 0], [0, -1, 0], [1, 0, 0], [-1, 0, 0]];
+
+        sixFaceAxis.forEach((faceAxis, f) => {
+            sixFaceAxis[f] = calcPosition(faceAxis, rotationVector[0], angleOfRotation[0]);
+        });
 
         let index = 0;
         let reverseAngle = false;
@@ -218,7 +221,7 @@ class CubeContainer extends Component {
                 }
             }
 
-            this.setState({'faceRotationIndex': index, "reverseAngle": reverseAngle});
+            this.setState({ 'faceRotationIndex': index, "reverseAngle": reverseAngle });
         }
         else {
             reverseAngle = this.state.reverseAngle;
@@ -252,17 +255,23 @@ class CubeContainer extends Component {
         );
     }
 
+    getScalingFactor() {
+        const minSize = window.innerHeight > window.innerWidth ? window.innerWidth : window.innerHeight;
+        return  Math.min(Math.max(minSize/300, 1), 1.5);
+    }
+
     render() {
         return (
             <div className="cube-container"
-                 onMouseDown={this.onTouchStart}
-                 onTouchStart={this.onTouchStart}
-                 onMouseMove={this.onTouchMove}
-                 onTouchMove={this.onTouchMove}>
+                style={{transform:`scale(${this.getScalingFactor()})`}}
+                onMouseDown={this.onTouchStart}
+                onTouchStart={this.onTouchStart}
+                onMouseMove={this.onTouchMove}
+                onTouchMove={this.onTouchMove}>
                 {this.state.positions.map((val, index) => {
                     return (
                         <Cube key={index} rotateCubes={this.rotateCube}
-                              translate={this.state.positions[index]} orientation={this.getOrientation(index)}/>
+                            translate={this.state.positions[index]} orientation={this.getOrientation(index)} />
                     )
                 })}
             </div>
