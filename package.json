@@ -1,7 +1,6 @@
 {
   "name": "RubixCube",
   "version": "0.1.0",
-  "private": false,
   "devDependencies": {
     "enzyme": "^2.7.1",
     "react-addons-test-utils": "^15.4.2",
@@ -16,5 +15,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  }
+  },
+  "homepage": "https://jithutholoor.github.io/RubixCube/build/"
 }
