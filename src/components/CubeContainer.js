@@ -55,6 +55,7 @@ class CubeContainer extends Component {
         this.rotateCube = this.rotateCube.bind(this);
         this.reArrangeCubes = this.reArrangeCubes.bind(this);
         this.rotateCubeSpace = this.rotateCubeSpace.bind(this);
+        this.faceRotationInit=this.faceRotationInit.bind(this);
     }
 
     componentDidMount() {
@@ -119,11 +120,17 @@ class CubeContainer extends Component {
             this.setState({ mousePoint: { x: getTouchPositions(eve).clientX, y: getTouchPositions(eve).clientY } }, () => {
                 this.rotateCubeSpace(diffX, diffY);
             });
+        }else if(this.state.touchedFace){
+            let diffY = getTouchPositions(eve).clientY - this.state.mousePoint.y;
+            let diffX = getTouchPositions(eve).clientX - this.state.mousePoint.x;
+            this.setState({ mousePoint: { x: getTouchPositions(eve).clientX, y: getTouchPositions(eve).clientY } });
+            this.rotateCube(diffX/2, diffY/2, this.state.positions[this.state.facePositionIndex], 
+                this.state.touchedFace, this.getOrientation(this.state.facePositionIndex));
         }
     }
 
     onTouchEnd() {
-        this.setState({ touchStarted: false, mousePoint: {} });
+        this.setState({ touchStarted: false, mousePoint: {},touchedFace:undefined });
         if (this.state.faceRotationIndex) {
             this.reArrangeCubes();
         }
@@ -260,6 +267,10 @@ class CubeContainer extends Component {
         return  Math.min(Math.max(minSize/300, 1), 1.5);
     }
 
+    faceRotationInit(mousePoint,face,index){
+        this.setState({touchedFace:face,mousePoint:mousePoint,facePositionIndex:index});
+    }
+
     render() {
         return (
             <div className="cube-container"
@@ -270,7 +281,7 @@ class CubeContainer extends Component {
                 onTouchMove={this.onTouchMove}>
                 {this.state.positions.map((val, index) => {
                     return (
-                        <Cube key={index} rotateCubes={this.rotateCube}
+                        <Cube key={index} faceRotationInit={(mousePoint,face)=>{this.faceRotationInit(mousePoint,face,index)}}
                             translate={this.state.positions[index]} orientation={this.getOrientation(index)} />
                     )
                 })}
