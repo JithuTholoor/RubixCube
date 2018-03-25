@@ -40,15 +40,15 @@ class Cube extends Component {
     }
 
     componentDidMount() {
-        document.addEventListener('mouseup', this.onTouchEnd);
-        document.addEventListener('touchend', this.onTouchEnd);
-        document.addEventListener('touchcancel', this.onTouchEnd);
+        this.elem.addEventListener('mouseup', this.onTouchEnd);
+        this.elem.addEventListener('touchend', this.onTouchEnd);
+        this.elem.addEventListener('touchcancel', this.onTouchEnd);
     }
 
     componentWillUnmount() {
-        document.removeEventListener('mouseup', this.onTouchEnd);
-        document.removeEventListener('touchend', this.onTouchEnd);
-        document.removeEventListener('touchcancel', this.onTouchEnd);
+        this.elem.removeEventListener('mouseup', this.onTouchEnd);
+        this.elem.removeEventListener('touchend', this.onTouchEnd);
+        this.elem.removeEventListener('touchcancel', this.onTouchEnd);
     }
 
     cubePosition() {
@@ -71,7 +71,8 @@ class Cube extends Component {
 
     render() {
         return (
-            <div className="cube" style={this.cubePosition()}>
+            <div ref={elem => this.elem = elem}
+                className="cube" style={this.cubePosition()}>
                 {faceArray.map((face, index) => {
                     return <div key={index}
                                 onMouseDown={(evt) => this.onTouchStart(evt, face)}

@@ -21,20 +21,6 @@ describe('Cube', () => {
         expect(tree.find('.face').length).toBe(6);
     })
 
-    describe('will unmount events',()=>{
-        let tree;
-        const rotateCubesMock= jest.fn()
-        beforeAll(()=>{
-            tree = shallow(<Cube rotateCubes={rotateCubesMock} translate={[0,0,0]} orientation={[1,0,0,0]}/>);
-        });
-
-        it('willUnmount events umount mouseup event',()=>{
-            tree.unmount();
-            tree.simulate('mousedown');
-            expect(tree.instance()).toBe(null);
-        });
-    })
-
     describe('mouse events',()=>{
         let tree;
         const faceRotationInit=jest.fn();

@@ -60,9 +60,9 @@ class CubeContainer extends Component {
 
     componentDidMount() {
         //adding listener for mouseup
-        document.addEventListener('mouseup', this.onTouchEnd);
-        document.addEventListener('touchend', this.onTouchEnd);
-        document.addEventListener('touchcancel', this.onTouchEnd);
+        this.elem.addEventListener('mouseup', this.onTouchEnd);
+        this.elem.addEventListener('touchend', this.onTouchEnd);
+        this.elem.addEventListener('touchcancel', this.onTouchEnd);
 
         //Initial position
         this.rotateCubeSpace(120, 0);
@@ -70,9 +70,9 @@ class CubeContainer extends Component {
 
     componentWillUnmount() {
         //removeEventListener        
-        document.removeEventListener('mouseup', this.onTouchEnd);
-        document.removeEventListener('touchend', this.onTouchEnd);
-        document.removeEventListener('touchcancel', this.onTouchEnd);
+        this.elem.removeEventListener('mouseup', this.onTouchEnd);
+        this.elem.removeEventListener('touchend', this.onTouchEnd);
+        this.elem.removeEventListener('touchcancel', this.onTouchEnd);
     }
 
     /**return css parameters for orientation */
@@ -273,7 +273,8 @@ class CubeContainer extends Component {
 
     render() {
         return (
-            <div className="cube-container"
+            <div ref={elem => this.elem = elem}
+                className="cube-container"
                 style={{transform:`scale(${this.getScalingFactor()})`}}
                 onMouseDown={this.onTouchStart}
                 onTouchStart={this.onTouchStart}
